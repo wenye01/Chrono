@@ -4,7 +4,7 @@
 
 < shader name || Shader.zip>
 
-├--------LICENSE
+|--------LICENSE
 
 |--------README
 
@@ -70,6 +70,7 @@ optifine使用`F3+R`可以快捷重新加载
 
 以PCL2作为启动器，选择某一版本导出启动脚本
 ![alt text](pcl2_bat.png)
+
 得到如下.bat文件
 ![alt text](lanuch_bat.png)（gb2312编码）
 
@@ -78,3 +79,15 @@ optifine使用`F3+R`可以快捷重新加载
 Executable Path:  **jave.exe路径**
 Working Directory:  **.minecraft文件夹**
 Command-line Arguments:  **jave.exe路径后面所有参数**
+
+### 编写注意事项
+
+内置变量，函数，宏等参考以下文档
+
+[Shaders - Development - OptiDocs](https://optifine.readthedocs.io/shaders_dev.html) OptiFine
+
+[The OpenGL Shading Language](https://registry.khronos.org/OpenGL/specs/gl/GLSLangSpec.1.20.pdf) GLSL
+
+由于optifine会自动读取.vch和.fsh文件中的`#ifdef`和`#ifndef`，将其处理为`#define`形式的配置单，所以在不希望形成配置的地方使用`#if defined`替代
+
+
