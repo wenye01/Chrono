@@ -42,4 +42,26 @@
 
 玩家手的渲染
 
+### gbuffer_hand_water:
 
+手持半透明物体
+
+### gbuffer_weather:
+
+天气，雪天，雨天
+
+### gbuffer_terrain:
+
+不透明几何体
+
+### gbuffer_block:
+
+方块实体
+
+### gbuffer_damageblock:
+
+受伤？不透明块
+
+### gbuffer_water:
+
+半透明物体
