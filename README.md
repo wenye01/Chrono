@@ -1,4 +1,4 @@
-# Cherno
+# Chrono
 
 ## 使用
 
