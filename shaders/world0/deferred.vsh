@@ -1,9 +1,5 @@
 #version 330 compatibility
 
-out vec2 texcoord;
+#define vert
 
-void main()
-{
-    gl_Position = ftransform();
-    texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
-}
+#include "/program/deferred/deferred0.glsl"

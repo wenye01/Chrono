@@ -1,13 +1,5 @@
 #version 330 compatibility
 
-uniform sampler2D colortex0;
+#define frag
 
-in vec2 texcoord;
-
-/* RENDERTARGETS: 0 */
-layout(location = 0) out vec4 color;
-
-void main()
-{
-    color = texture(colortex0, texcoord);
-}
+#include "/program/deferred/deferred0.glsl"
