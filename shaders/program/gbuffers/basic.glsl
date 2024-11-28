@@ -3,7 +3,8 @@
 
 in vec3 vaPosition;
 
-out vec4 color;
+/* RENDERTARGETS: 0 */
+layout(location = 0) out vec4 color;
 
 void main()
 {

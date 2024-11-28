@@ -1,5 +1,4 @@
 #version 330 compatibility
 
 #define frag
-
-#include "program/gbuffers/basic.glsl"
+#include "/program/shadow/shadow.glsl"

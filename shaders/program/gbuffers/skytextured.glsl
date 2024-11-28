@@ -1,4 +1,5 @@
 #include "/include/global.glsl"
+#include "/setting.glsl"
 
 #if defined vert
 
@@ -45,15 +46,28 @@ void main()
         scene_color.rgb = texture(gtexture, sky_uv).rgb;
         break;
     case MC_RENDER_STAGE_SUN:
+#ifdef VANILLA_SUN
         scene_color.a = 255.0 / 255.0;
         offset = sky_uv * 2.0f - 1.0f;
         if (max_of(abs(offset)) > 0.25)
         {
             discard;
         }
-        // scene_color.rgb = texture(gtexture, sky_uv).rgb;
+        scene_color.rgb = texture(gtexture, sky_uv).rgb;
+#endif
         break;
     case MC_RENDER_STAGE_MOON:
+#ifdef VANILLA_MOON
+        scene_color.a = 255.0 / 255.0;
+        offset = fract(vec2(4.0, 2.0) * sky_uv);
+        offset = offset * 2.0f - 1.0f;
+        if (max_of(abs(offset)) > 0.25)
+            discard;
+
+        scene_color.rgb = texture(gtexture, sky_uv).rgb;
+
+        break;
+#endif
         break;
     case MC_RENDER_STAGE_STARS:
         break;

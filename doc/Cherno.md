@@ -90,4 +90,4 @@ Command-line Arguments:  **jave.exe路径后面所有参数**
 
 由于optifine会自动读取.vch和.fsh文件中的`#ifdef`和`#ifndef`，将其处理为`#define`形式的配置单，所以在不希望形成配置的地方使用`#if defined`替代
 
-
+光影设置在根目录下shaders.properties添加到对应的条目，setting.glsl中添加设置值，并且代码中include setting.glsl，使用`#ifdef`和`#ifndef`控制开关型设置。
