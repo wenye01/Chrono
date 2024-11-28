@@ -4,7 +4,7 @@ in vec3 vaPosition;
 in vec2 vaUV0;
 
 uniform vec3 chunkOffset;
-uniform vec3 cameraPostion;
+uniform vec3 cameraPosition;
 
 uniform mat4 modelViewMatrix;
 uniform mat4 porjectionMatrix;
@@ -20,9 +20,9 @@ void main()
     // texcoord = vaUV0;
 
     vec3 worldVertexPosition =
-        cameraPostion + (gbufferModelViewInverse * modelViewMatrix * vec4(vaPosition + chunkOffset, 1.f)).xyz;
+        cameraPosition + (gbufferModelViewInverse * modelViewMatrix * vec4(vaPosition + chunkOffset, 1.f)).xyz;
 
-    float distanceFromCamera = distance(worldVertexPosition, cameraPostion);
+    float distanceFromCamera = distance(worldVertexPosition, cameraPosition);
 
     gl_Position = gbufferProjection * modelViewMatrix * vec4(vaPosition + chunkOffset - 0.01 * distanceFromCamera, 1.f);
 
