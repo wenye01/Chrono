@@ -24,9 +24,10 @@ void main()
 
     float distanceFromCamera = distance(worldVertexPosition, cameraPosition);
 
-    gl_Position = gbufferProjection * modelViewMatrix * vec4(vaPosition + chunkOffset - 0.01 * distanceFromCamera, 1.f);
+    // gl_Position = gbufferProjection * modelViewMatrix * vec4(vaPosition + chunkOffset - 0.01 *
+    // distanceFromCamera, 1.f);
 
-    // gl_Position = ftransform();
+    gl_Position = ftransform();
     texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
     lmcoord = (gl_TextureMatrix[1] * gl_MultiTexCoord1).xy;
     glcolor = gl_Color;

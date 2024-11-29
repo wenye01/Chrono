@@ -18,6 +18,6 @@ void main()
     color *= texture(lightmap, lmcoord);
     if (color.a < alphaTestRef)
     {
-        discard;
+        // discard;
     }
 }

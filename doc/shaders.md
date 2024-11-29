@@ -52,7 +52,7 @@
 
 ### gbuffer_terrain:
 
-不透明几何体
+不透明几何体，玻璃在里面，染色玻璃在water里
 
 ### gbuffer_block:
 
