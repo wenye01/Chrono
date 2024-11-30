@@ -3,7 +3,6 @@
 
 in vec3 vaPosition;
 
-/* RENDERTARGETS: 0 */
 layout(location = 0) out vec4 color;
 
 void main()
@@ -20,7 +19,9 @@ void main()
 
 in vec4 color;
 
+/* RENDERTARGETS: 01 */
 layout(location = 0) out vec3 scene_color;
+layout(location = 1) out vec4 gbuffer_data_0;
 
 void main()
 {

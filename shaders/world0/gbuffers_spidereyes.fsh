@@ -15,6 +15,6 @@ void main()
     color = texture(gtexture, texcoord) * glcolor;
     if (color.a < alphaTestRef)
     {
-        // discard;
+        discard;
     }
 }

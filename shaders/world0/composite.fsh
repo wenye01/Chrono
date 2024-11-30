@@ -11,14 +11,43 @@ uniform mat4 shadowModelView;
 uniform mat4 shadowProjection;
 
 uniform sampler2D colortex0;
+uniform sampler2D colortex1;
 uniform sampler2D shadowtex0;
 uniform sampler2D shadowtex1;
 uniform sampler2D shadowColor0;
 uniform sampler2D depthtex0;
 uniform sampler2D depthtex1;
 
+uniform vec3 cameraPosition;
+
+uniform vec3 light_dir;
+
 in vec2 texcoord;
 
+vec2 unpack_unorm_2x8(float pack)
+{
+    vec2 xy;
+    xy.x = modf((65535.0 / 256.0) * pack, xy.y);
+    return xy * vec2(256.0 / 255.0, 1.0 / 255.0);
+}
+vec2 sign_non_zero(vec2 v)
+{
+    return vec2(v.x >= 0.0 ? 1.0 : -1.0, v.y >= 0.0 ? 1.0 : -1.0);
+}
+vec3 decode_unit_vector(vec2 e)
+{
+    // Scale to [-1, 1]
+    e = 2.0 * e - 1.0;
+
+    // Extract Z component
+    vec3 v = vec3(e.xy, 1.0 - abs(e.x) - abs(e.y));
+
+    // Reflect the folds of the lower hemisphere over the diagonals
+    if (v.z < 0)
+        v.xy = (1.0 - abs(v.yx)) * sign_non_zero(v.xy);
+
+    return normalize(v);
+}
 /* RENDERTARGETS: 0 */
 layout(location = 0) out vec4 color;
 
@@ -32,26 +61,26 @@ void main()
     view_pos = project_and_divide(gbufferProjectionInverse, view_pos);
     vec3 scene_pos = (gbufferModelViewInverse * vec4(view_pos, 1.f)).xyz;
 
-    vec3 differenceScreenX = dFdx(scene_pos);
-    vec3 differenceScreenY = dFdy(scene_pos);
-    vec3 viewSpaceGeoNormal = normalize(cross(differenceScreenX, differenceScreenY));
-    vec3 worldGeoNormal = mat3(gbufferModelViewInverse) * viewSpaceGeoNormal;
+    const float pixel_scale = 8192.f;
+    scene_pos = scene_pos + cameraPosition;
+    scene_pos = floor(scene_pos * pixel_scale + 0.01) / pixel_scale + (0.5 / pixel_scale);
+    scene_pos = scene_pos - cameraPosition;
 
-    scene_pos = scene_pos + worldGeoNormal * 0.03;
+    scene_pos = scene_pos;
     vec3 shadowViewPos = (shadowModelView * vec4(scene_pos, 1.f)).xyz;
     vec3 shadowNDC = project_and_divide(shadowProjection, shadowViewPos);
     vec3 distortedNDC = vec3(distort(shadowNDC.xy), shadowNDC.z);
     vec3 shadowScreenPos = distortedNDC * 0.5 + 0.5;
 
-    float current = shadowScreenPos.z;
-    float shadow0 = texture(shadowtex0, shadowScreenPos.xy).r;
-    float shadow1 = texture(shadowtex1, shadowScreenPos.xy).r;
-    float shade = current > shadow0 ? 0.0 : 1.0;
+    float shadow = texture(shadowtex1, shadowScreenPos.xy).x;
 
-    float shade0 = step(current - 0.0001, shadow0);
-    float shade1 = step(current - 0.0001, shadow1);
+    float shadowFactor = 0.5f;
+    float shade = step(shadow + 0.001, shadowScreenPos.z) * shadowFactor;
 
-    vec3 shadowColor = pow(texture(shadowColor0, shadowScreenPos.xy).rgb, vec3(2.2));
+    if (NoL < 1e-3)
+    {
+        shade = 0.f;
+    }
 
-    color = texture(colortex0, texcoord) * (1 + shade) * 0.5;
+    color = texture(colortex0, texcoord) * (1 - shade / 2);
 }

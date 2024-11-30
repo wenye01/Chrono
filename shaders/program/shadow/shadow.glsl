@@ -38,12 +38,9 @@ layout(location = 0) out vec4 outColor0;
 void main()
 {
     vec4 colorData = texture(gtexture, texcoord);
-    vec3 albedo = pow(colorData.rgb, vec3(2.2)) * pow(color, vec3(2.2));
-    float transparency = colorData.a;
-
-    if (transparency < 0.1f)
+    if (colorData.a < 0.1f)
     {
-        // discard;
+        discard;
     }
     outColor0 = colorData;
 }
