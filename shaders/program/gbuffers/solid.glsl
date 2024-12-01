@@ -1,24 +1,28 @@
 #if defined vert
 
-in vec2 vaUV0;
-in vec3 vaPosition;
-in vec4 vaColor;
+attribute vec3 mc_Entity;
+attribute vec3 at_tangent;
 
 uniform mat4 modelViewMatrix;
 uniform mat4 porjectionMatrix;
+uniform mat4 gbufferModelViewInverse;
 
-out vec2 lmcoord;
+flat out float material_mask;
+flat out vec3 normal;
+
 out vec2 texcoord;
+out vec2 lmcoord;
 out vec4 glcolor;
-out vec3 geoNormal;
 
 void main()
 {
-    gl_Position = ftransform();
-    texcoord = vaUV0;
-    glcolor = vaColor.rgb;
-
+    texcoord = gl_MultiTexCoord0.xy;
+    lmcoord = gl_MultiTexCoord1.xy;
     glcolor = gl_Color;
+    material_mask = mc_Entity.x - 10000.0;
+    normal = mat3(gbufferModelViewInverse) * normalize(gl_NormalMatrix * gl_Normal);
+
+    gl_Position = ftransform();
 }
 #endif
 //-----------------------------------------------------------------
@@ -26,27 +30,33 @@ void main()
 //-----------------------------------------------------------------
 #if defined frag
 
+#include "/include/pack.glsl"
+
 uniform sampler2D lightmap;
 uniform sampler2D gtexture;
-uniform vec4 entityColor;
 
-uniform float alphaTestRef = 0.1;
+flat in float material_mask;
+flat in vec3 normal;
 
-in vec2 lmcoord;
 in vec2 texcoord;
+in vec2 lmcoord;
 in vec4 glcolor;
-
-/* RENDERTARGETS: 0 */
+/* clang-format off */
 layout(location = 0) out vec4 color;
+layout(location = 1) out vec4 gbuffer_data_0; // colortex1 in deferred/composite
+/* DRAWBUFFERS:01 */
+/* clang-format on */
 
 void main()
 {
     color = texture(gtexture, texcoord) * glcolor;
-    color.rgb = mix(color.rgb, entityColor.rgb, entityColor.a);
     color *= texture(lightmap, lmcoord);
-    if (color.a < alphaTestRef)
+
+    gbuffer_data_0 = vec4(encode_unit_vector(normal), encode_unit_vector(vec3(lmcoord, material_mask)));
+
+    if (color.a < 0.1)
     {
-        // discard;
+        discard;
     }
 }
 #endif

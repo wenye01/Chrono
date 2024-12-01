@@ -1,5 +1,4 @@
 #include "/include/global.glsl"
-#include "/setting.glsl"
 
 #if defined vert
 
@@ -9,9 +8,9 @@ out vec2 sky_uv;
 
 void main()
 {
-    sky_uv = mat2(gl_TextureMatrix[0]) * gl_MultiTexCoord0.xy + gl_TextureMatrix[0][3].xy;
-
     gl_Position = ftransform();
+
+    sky_uv = mat2(gl_TextureMatrix[0]) * gl_MultiTexCoord0.xy + gl_TextureMatrix[0][3].xy;
     texcoord = (gl_TextureMatrix[0] * gl_MultiTexCoord0).xy;
     glcolor = gl_Color;
 }

@@ -75,7 +75,7 @@ vec3 draw_sun(vec3 ray_dir)
     float len = 0.f;
     if (theta > 0.9f)
     {
-        len = smoothstep(0.9, 1.f, theta);
+        len = smoothstep(0.95, 1.f, theta);
     }
     vec3 sun = sc * len;
     return sun + ring;
@@ -87,7 +87,10 @@ vec3 draw_sky(vec3 ray_dir)
 
     new_sky += draw_star(ray_dir);
     new_sky += draw_moon(ray_dir);
+
+#ifndef VANILLA_SUN
     new_sky += draw_sun(ray_dir);
+#endif
 
     return new_sky;
 }

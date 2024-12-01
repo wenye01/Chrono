@@ -1,4 +1,4 @@
 #version 330 compatibility
 
 #define vert
-#include "/deferred/gbuffers/skytextured.glsl"
+#include "/program/gbuffers/skytextured.glsl"

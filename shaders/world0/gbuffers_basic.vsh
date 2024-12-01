@@ -1,5 +1,5 @@
-#version 330 compatibility
+#version 400 compatibility
 
 #define vert
 
-#include "program/gbuffers/basic.glsl"
+#include "/program/gbuffers/basic.glsl"

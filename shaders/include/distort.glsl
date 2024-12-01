@@ -1,13 +1,37 @@
 #if !defined DISTORT
 #define DISTORT
 
-#define SHADOW_MAP_BIAS 0.75
+#include "/include/global.glsl"
 
-vec2 distort(vec2 shadowTexturePosition)
+#define SHADOW_DEPTH_SCALE 0.2
+#define SHADOW_DISTORTION 0.85
+
+float quartic_length(vec2 v)
 {
-    float distanceFromPlayer = length(shadowTexturePosition);
-    vec2 distortedPosition = shadowTexturePosition / mix(1.0, distanceFromPlayer, 0.9);
-    return distortedPosition;
+    return sqrt(sqrt(pow4(v.x) + pow4(v.y)));
+}
+
+float get_distortion_factor(vec2 shadow_clip_pos)
+{
+    return quartic_length(shadow_clip_pos) * SHADOW_DISTORTION + (1.0 - SHADOW_DISTORTION);
+}
+
+vec3 distort_shadow_space(vec3 shadow_clip_pos, float distortion_factor)
+{
+    return shadow_clip_pos * vec3(vec2(rcp(distortion_factor)), SHADOW_DEPTH_SCALE);
+}
+
+vec3 distort(vec3 shadow_clip_pos)
+{
+    float distortion_factor = get_distortion_factor(shadow_clip_pos.xy);
+    return distort_shadow_space(shadow_clip_pos, distortion_factor);
+}
+
+vec3 undistort(vec3 shadow_clip_pos)
+{
+    shadow_clip_pos.xy *= (1.0 - SHADOW_DISTORTION) / (1.0 - quartic_length(shadow_clip_pos.xy));
+    shadow_clip_pos.z *= rcp(SHADOW_DEPTH_SCALE);
+    return shadow_clip_pos;
 }
 
 #endif

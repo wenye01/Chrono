@@ -1,13 +1,11 @@
 
-#ifdef vert
+#if defined vert
 
-in vec3 vaPosition;
-
-layout(location = 0) out vec4 color;
+out vec4 color;
 
 void main()
 {
-    gl_Position = vaPosition;
+    gl_Position = ftransform();
     color = gl_Color;
 }
 
@@ -15,17 +13,16 @@ void main()
 //-----------------------------------------------------------------
 
 //-----------------------------------------------------------------
-#ifdef frag
+#if defined frag
 
 in vec4 color;
 
-/* RENDERTARGETS: 01 */
-layout(location = 0) out vec3 scene_color;
-layout(location = 1) out vec4 gbuffer_data_0;
+/* RENDERTARGETS: 0 */
+layout(location = 0) out vec4 scene_color;
 
 void main()
 {
-    scene_color = color.xyz;
+    scene_color = color;
 }
 
 #endif
