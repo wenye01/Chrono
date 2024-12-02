@@ -16,14 +16,30 @@ const vec2 poissonDisk[PCF_NUM_SAMPLES] =
     vec2[](vec2(0, 1), vec2(1, 0), vec2(0, -1), vec2(-1, 0), vec2(0.7071067811865476, 0.7071067811865476),
            vec2(-0.7071067811865476, 0.7071067811865476), vec2(0.7071067811865476, -0.7071067811865476),
            vec2(-0.7071067811865476, -0.7071067811865476));
+float randomRotation(in vec2 coord)
+{
+    return fract(sin(dot(coord, vec2(12.9898, 78.233))) * 43758.5453);
+}
 
-float PCF(vec3 shadow_screen_pos, float radius) // 加入随机旋转去除条纹，也可以使用重要性采样
+mat2 rotate(float angle)
+{
+    float c = cos(angle);
+    float s = sin(angle);
+    return mat2(c, -s, s, c);
+}
+
+float PCF(vec3 shadow_screen_pos, float radius)
 {
     const vec2 texelSize = vec2(1.0 / 8192.0); // 8192x8192 作为配置加入，不要写死
     float visibility = 0.0;
+    float angle = randomRotation(shadow_screen_pos.xy) * 2.0 * 3.141592653589793; // 计算随机旋转角度
+    mat2 rot = rotate(angle);                                                     // 生成旋转矩阵
+
     for (int n = 0; n < PCF_NUM_SAMPLES; ++n)
     {
-        vec2 sampleCoord = poissonDisk[n] * texelSize * radius + shadow_screen_pos.xy;
+        vec2 sampleCoord = poissonDisk[n] * texelSize * radius;
+        sampleCoord = rot * sampleCoord; // 应用旋转
+        sampleCoord += shadow_screen_pos.xy;
         float closestDepth = texture2D(shadowtex1, sampleCoord).r;
         visibility += step(shadow_screen_pos.z, closestDepth);
     }
@@ -58,7 +74,7 @@ float calculatorShadow(vec3 scene_pos, vec3 normal)
 
     float depth = shadow_basic(shadow_screen_pos);
     float shadow = step(shadow_screen_pos.z, depth);
-    return shadow; // PCF(shadow_screen_pos, PCF_RADIUS);
+    return PCF(shadow_screen_pos, PCF_RADIUS);
 }
 
 #endif
