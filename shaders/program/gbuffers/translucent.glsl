@@ -9,6 +9,8 @@ uniform mat4 gbufferProjectionInverse;
 
 uniform vec3 cameraPosition;
 
+uniform float frameTimeCounter;
+
 #include "/include/global.glsl"
 #include "/include/space_transform.glsl"
 #include "/include/displacement.glsl"
@@ -32,14 +34,14 @@ void main()
     vec3 point_pos = (gl_ModelViewMatrix * gl_Vertex).xyz;
     point_pos = view2scene(point_pos);
 
-    point_pos = point_pos + cameraPosition;     // world pos
-    point_pos = animate(point_pos, block_mask); // animate pos
+    point_pos = point_pos + cameraPosition;      // world pos
+    point_pos += animate(point_pos, block_mask); // animate pos
     point_pos = point_pos - cameraPosition;
 
     point_pos = scene2view(point_pos);
-    point_pos = transform(gbufferPorjection, point_pos); // clip pos
+    vec4 clip_pos = gl_ProjectionMatrix * vec4(point_pos, 1.f); // clip pos, gbufferProjection会出错
 
-    gl_Position = ftransform();
+    gl_Position = clip_pos;
 }
 #endif
 //-----------------------------------------------------------------

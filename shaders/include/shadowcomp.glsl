@@ -59,9 +59,9 @@ float calculatorShadow(vec3 scene_pos, vec3 normal)
     vec3 shadow_clip_pos = project_ortho(shadowProjection, shadow_view_pos);
     vec3 shadow_screen_pos = distort(shadow_clip_pos) * 0.5 + 0.5;
 
-    // float depth = shadow_basic(shadow_screen_pos);
-    // float shadow = step(shadow_screen_pos.z, depth) * PCF(shadow_screen_pos, PCF_RADIUS);
-    return PCF(shadow_screen_pos, PCF_RADIUS);
+    float depth = shadow_basic(shadow_screen_pos);
+    float shadow = step(shadow_screen_pos.z, depth);
+    return shadow; // PCF(shadow_screen_pos, PCF_RADIUS);
 }
 
 #endif
