@@ -17,9 +17,9 @@ const vec2 poissonDisk[PCF_NUM_SAMPLES] =
            vec2(-0.7071067811865476, 0.7071067811865476), vec2(0.7071067811865476, -0.7071067811865476),
            vec2(-0.7071067811865476, -0.7071067811865476));
 
-float PCF(vec3 shadow_screen_pos, float radius)
+float PCF(vec3 shadow_screen_pos, float radius) // 加入随机旋转去除条纹，也可以使用重要性采样
 {
-    const vec2 texelSize = vec2(1.0 / 8192.0); // 8192x8192
+    const vec2 texelSize = vec2(1.0 / 8192.0); // 8192x8192 作为配置加入，不要写死
     float visibility = 0.0;
     for (int n = 0; n < PCF_NUM_SAMPLES; ++n)
     {
@@ -56,9 +56,9 @@ float calculatorShadow(vec3 scene_pos, vec3 normal)
     vec3 shadow_clip_pos = project_ortho(shadowProjection, shadow_view_pos);
     vec3 shadow_screen_pos = distort(shadow_clip_pos) * 0.5 + 0.5;
 
-    // float depth = shadow_basic(shadow_screen_pos);
-    // float shadow = step(shadow_screen_pos.z, depth) * PCF(shadow_screen_pos, PCF_RADIUS);
-    return PCF(shadow_screen_pos, PCF_RADIUS);
+    float depth = shadow_basic(shadow_screen_pos);
+    float shadow = step(shadow_screen_pos.z, depth);
+    return shadow; // PCF(shadow_screen_pos, PCF_RADIUS);
 }
 
 #endif

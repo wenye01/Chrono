@@ -2,7 +2,7 @@
 #define SPACE_TRANSFORM
 
 #include "/include/mathematics.glsl"
-// 使用前需要定义
+// 使用前需要声明变量
 // mat4 gbufferModelView;
 // mat4 gbufferModelViewInverse;
 // mat4 gbufferProjectionInverse;
