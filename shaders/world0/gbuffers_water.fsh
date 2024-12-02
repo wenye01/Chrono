@@ -1,3 +1,8 @@
+//#version 330 compatibility
+//
+//#define frag
+//
+//#include "/program/gbuffers/translucent.glsl"
 #version 330 compatibility
 
 uniform sampler2D lightmap;

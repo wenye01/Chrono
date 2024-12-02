@@ -1,3 +1,9 @@
+//#version 330 compatibility
+//
+//#define vert
+//
+//#include "/program/gbuffers/translucent.glsl"
+
 #version 330 compatibility
 
 out vec2 lmcoord;

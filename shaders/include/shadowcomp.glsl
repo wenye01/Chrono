@@ -20,9 +20,9 @@ const vec2 poissonDisk[PCF_NUM_SAMPLES] =
            vec2(-0.24188840, 0.99706507), vec2(-0.81409955, 0.91437590), vec2(0.19984126, 0.78641367),
            vec2(0.14383161, -0.14100790));
 
-float PCF(vec3 shadow_screen_pos, float radius)
+float PCF(vec3 shadow_screen_pos, float radius) // 加入随机旋转去除条纹，也可以使用重要性采样
 {
-    const vec2 texelSize = vec2(1.0 / 8192.0); // 8192x8192
+    const vec2 texelSize = vec2(1.0 / 8192.0); // 8192x8192 作为配置加入，不要写死
     float visibility = 0.0;
     for (int n = 0; n < PCF_NUM_SAMPLES; ++n)
     {
