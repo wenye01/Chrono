@@ -10,15 +10,12 @@
 // uniform mat4 shadowModelView;
 // uniform mat4 shadowProjection;
 
-const int PCF_NUM_SAMPLES = 16; // 减少采样点数量
-const float PCF_RADIUS = 5;     // 采样半径
+const int PCF_NUM_SAMPLES = 8; // 减少采样点数量
+const float PCF_RADIUS = 5;    // 采样半径
 const vec2 poissonDisk[PCF_NUM_SAMPLES] =
-    vec2[](vec2(-0.94201624, -0.39906216), vec2(0.94558609, -0.76890725), vec2(-0.094184101, -0.92938870),
-           vec2(0.34495938, 0.29387760), vec2(-0.91588581, 0.45771432), vec2(-0.81544232, -0.87912464),
-           vec2(-0.38277543, 0.27676841), vec2(0.97484398, 0.75648379), vec2(0.44323325, -0.97511554),
-           vec2(0.53742981, -0.47373420), vec2(-0.26496911, -0.41893023), vec2(0.79197514, 0.19090188),
-           vec2(-0.24188840, 0.99706507), vec2(-0.81409955, 0.91437590), vec2(0.19984126, 0.78641367),
-           vec2(0.14383161, -0.14100790));
+    vec2[](vec2(0, 1), vec2(1, 0), vec2(0, -1), vec2(-1, 0), vec2(0.7071067811865476, 0.7071067811865476),
+           vec2(-0.7071067811865476, 0.7071067811865476), vec2(0.7071067811865476, -0.7071067811865476),
+           vec2(-0.7071067811865476, -0.7071067811865476));
 
 float PCF(vec3 shadow_screen_pos, float radius)
 {
@@ -28,7 +25,7 @@ float PCF(vec3 shadow_screen_pos, float radius)
     {
         vec2 sampleCoord = poissonDisk[n] * texelSize * radius + shadow_screen_pos.xy;
         float closestDepth = texture2D(shadowtex1, sampleCoord).r;
-        visibility += step(shadow_screen_pos.z - 0.001, closestDepth);
+        visibility += step(shadow_screen_pos.z, closestDepth);
     }
     return visibility / float(PCF_NUM_SAMPLES);
 }
