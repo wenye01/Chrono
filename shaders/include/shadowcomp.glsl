@@ -48,7 +48,7 @@ float PCF(vec3 shadow_screen_pos, float radius)
 
 float shadow_basic(vec3 shadow_screen_pos)
 {
-    return texture(shadowtex1, shadow_screen_pos.xy).r;
+    return step(shadow_screen_pos.z, texture(shadowtex1, shadow_screen_pos.xy).r);
 }
 
 vec3 get_shadow_bias(vec3 scene_pos, vec3 normal, float NoL)
@@ -72,9 +72,11 @@ float calculatorShadow(vec3 scene_pos, vec3 normal)
     vec3 shadow_clip_pos = project_ortho(shadowProjection, shadow_view_pos);
     vec3 shadow_screen_pos = distort(shadow_clip_pos) * 0.5 + 0.5;
 
-    float depth = shadow_basic(shadow_screen_pos);
-    float shadow = step(shadow_screen_pos.z, depth);
+#if SHADOW_MODE == 0
+    return shadow_basic(shadow_screen_pos);
+#elif SHADOW_MODE == 1
     return PCF(shadow_screen_pos, PCF_RADIUS);
+#endif
 }
 
 #endif

@@ -1,0 +1,8 @@
+screen.sky = 天空
+option.VANILLA_SUN = 原版太阳
+option.VANILLA_MOON = 原版月亮
+screen.shadow = 阴影
+
+option.SHADOW_MODE = 阴影类型
+value.SHADOW_MODE.0 = 基础阴影
+value.SHADOW_MODE.1 = 渐进阴影(PCF)
