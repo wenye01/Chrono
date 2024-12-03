@@ -8,7 +8,6 @@
 
 float gerstner_wave(vec2 coord, vec2 wave_dir, float t, float noise, float wavelength)
 {
-    const float pi = 3.1415926;
     // Gerstner wave function from Belmu in #snippets, modified
     const float g = 9.8;
 
@@ -22,7 +21,6 @@ float gerstner_wave(vec2 coord, vec2 wave_dir, float t, float noise, float wavel
 
 vec3 water_displacement(vec3 world_pos)
 {
-    const float pi = 3.1415926;
     const float WATER_WAVE_FREQUENCY = 2.5;
     const float WATER_WAVE_SPEED_STILL = 1.0;
 
@@ -39,7 +37,7 @@ vec3 water_displacement(vec3 world_pos)
 vec3 animate(vec3 world_pos, float block_mask)
 {
     vec3 displacement = vec3(0.f);
-    if (block_mask == 1.0)
+    if (block_mask == 1.0) // water
     {
         displacement = water_displacement(world_pos);
     }

@@ -55,6 +55,6 @@ void main()
     }
     else
     {
-        scene_color = vec4(1.f); // texture(colortex0, texcoord) * (shadow + 1) / 2;
+        scene_color = texture(colortex0, texcoord) * (shadow + 1) / 2;
     }
 }
