@@ -9,4 +9,8 @@
 
 #define sun_angular_radius 2.0 // [0.1 0.2]
 
+/*
+const int colortex1Format = RGBA16;
+*/
+
 #endif

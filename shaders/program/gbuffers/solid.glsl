@@ -47,13 +47,12 @@ layout(location = 1) out vec4 gbuffer_data_0; // colortex1 in deferred/composite
 void main()
 {
     color = texture(gtexture, texcoord) * glcolor;
-    color *= texture(lightmap, lmcoord);
-
-    gbuffer_data_0 = vec4(encode_unit_vector(normal), encode_unit_vector(vec3(lmcoord, material_mask)));
-
     if (color.a < 0.1)
     {
         discard;
     }
+    gbuffer_data_0 = vec4(encode_unit_vector(normal), // xy: normal
+                          pack_unorm_2x8(lmcoord),    // z: lmcoord
+                          material_mask);             //  w: material_mask
 }
 #endif

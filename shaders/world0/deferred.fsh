@@ -27,7 +27,7 @@ uniform vec3 light_dir;
 
 #include "/include/pack.glsl"
 #include "/include/sky/sky.glsl"
-#include "/include/shadowcomp.glsl"
+#include "/include/lighting.glsl"
 
 in vec2 texcoord;
 
@@ -45,9 +45,12 @@ void main()
     vec3 scene_pos = view2scene(view_pos);
     vec3 world_dir = normalize(scene_pos - gbufferModelViewInverse[3].xyz); // 视线方向
 
+    // decode
     vec3 normal = decode_unit_vector(gbuffer_data_0.xy);
-
-    float shadow = calculatorShadow(scene_pos, normal);
+    // x: 光源亮度, y: 天光亮度
+    vec2 light_level = unpack_unorm_2x8(gbuffer_data_0.z);
+    uint material_mask = uint(gbuffer_data_0.w);
+    // float shadow = calculatorShadow(scene_pos, normal);
 
     if (depth == 1.0f)
     {
@@ -55,6 +58,7 @@ void main()
     }
     else
     {
-        scene_color = texture(colortex0, texcoord) * (shadow + 1) / 2;
+        scene_color = texture(colortex0, texcoord) *
+                      lighting(scene_pos, normal, world_dir, light_dir, light_level, material_mask);
     }
 }

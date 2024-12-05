@@ -59,12 +59,12 @@ vec3 get_shadow_bias(vec3 scene_pos, vec3 normal, float NoL)
     return bias;
 }
 
-float calculatorShadow(vec3 scene_pos, vec3 normal)
+float calculator_shadow(vec3 scene_pos, vec3 normal)
 {
     float NoL = dot(normal, light_dir);
     if (NoL < 1e-3)
     {
-        return 0.f;
+        // return 0.f;
     }
 
     vec3 bias = get_shadow_bias(scene_pos, normal, NoL);

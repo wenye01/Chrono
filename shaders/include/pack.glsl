@@ -35,4 +35,39 @@ vec3 decode_unit_vector(vec2 e)
     return normalize(v);
 }
 
+// https://github.com/Jessie-LC/open-source-utility-code/blob/main/advanced/packing.glsl
+
+// 两个4位压缩到一个float
+float pack_unorm_2x4(vec2 xy)
+{
+    return dot(floor(15.0 * xy + 0.5), vec2(1.0 / 255.0, 16.0 / 255.0));
+}
+float pack_unorm_2x4(float x, float y)
+{
+    return pack_unorm_2x4(vec2(x, y));
+}
+
+vec2 unpack_unorm_2x4(float pack)
+{
+    vec2 xy;
+    xy.x = modf((255.0 / 16.0) * pack, xy.y);
+    return xy * vec2(16.0 / 15.0, 1.0 / 15.0);
+}
+// 两个8位压缩到一个16位，精度有点差
+float pack_unorm_2x8(vec2 v)
+{
+    return dot(floor(255.0 * v + 0.5), vec2(1.0 / 65535.0, 256.0 / 65535.0));
+}
+float pack_unorm_2x8(float x, float y)
+{
+    return pack_unorm_2x8(vec2(x, y));
+}
+
+vec2 unpack_unorm_2x8(float pack)
+{
+    vec2 xy;
+    xy.x = modf((65535.0 / 256.0) * pack, xy.y);
+    return xy * vec2(256.0 / 255.0, 1.0 / 255.0);
+}
+
 #endif
