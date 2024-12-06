@@ -5,8 +5,6 @@
 
 #include "/include/global.glsl"
 
-uniform vec3 sun_dir;
-
 float fast_acos(float x)
 {
     const float pi = 3.1415926;
@@ -25,22 +23,9 @@ vec3 draw_cloud()
     return vec3(0.f);
 }
 
-uniform vec3 sunPosition;
-uniform vec3 cameraPosition;
-
 vec3 draw_star(vec3 ray_dir)
 {
-    vec3 sun = sunPosition - cameraPosition;
-    sun = sun_dir;
-    vec3 star = vec3(0.f);
-
-    float theta = dot(ray_dir, sun);
-    if (theta > 0.80)
-    {
-        // star = vec3(1.f, 1.f, 0.f);
-    }
-
-    return star;
+    return vec3(0.f);
 }
 
 vec3 draw_moon(vec3 ray_dir)
@@ -59,29 +44,19 @@ vec3 spc(float n, float bright)
     return pal(n, vec3(bright), vec3(0.5), vec3(1.0), vec3(0.0, 0.33, 0.67));
 }
 
-vec3 draw_sun(vec3 ray_dir)
+vec3 draw_sun(vec3 ray_dir, vec3 sun_color)
 {
-    float theta = dot(ray_dir, sun_dir);
+    float nu = dot(ray_dir, sun_dir);
+
+    // Limb darkening model from http://www.physics.hmc.edu/faculty/esin/a101/limbdarkening.pdf
     const vec3 alpha = vec3(0.429, 0.522, 0.614);
-    float center_to_edge = max(sun_angular_radius - fast_acos(theta), 0.f);
-    vec3 limb_darkening = pow((vec3(1.0 - (1.0 - center_to_edge) * (1.0 - center_to_edge))), 0.5 * alpha);
+    float center_to_edge = max(sun_angular_radius - fast_acos(nu), 0.f);
+    vec3 limb_darkening = pow(vec3(1.0 - sqr(1.0 - center_to_edge)), 0.5 * alpha);
 
-    vec3 ring = sun_luminance * vec3(0.002f, 0.002f, 0.0f) * step(0.0, center_to_edge) * limb_darkening;
-
-    float rad = 0.075;
-    float spec = 0.13;
-    vec3 sc = spc(spec - 0.1f, 0.6f) * 0.85f;
-
-    float len = 0.f;
-    if (theta > 0.9f)
-    {
-        len = smoothstep(0.95, 1.f, theta);
-    }
-    vec3 sun = sc * len;
-    return sun + ring;
+    return sun_luminance * sun_color * step(0.0, center_to_edge) * limb_darkening;
 }
 
-vec3 draw_sky(vec3 ray_dir)
+vec3 draw_sky(vec3 ray_dir, vec3 atmosphere, vec3 sun_color)
 {
     vec3 new_sky = vec3(0.f);
 
@@ -89,9 +64,9 @@ vec3 draw_sky(vec3 ray_dir)
     new_sky += draw_moon(ray_dir);
 
 #ifndef VANILLA_SUN
-    new_sky += draw_sun(ray_dir);
+    // new_sky += draw_sun(ray_dir, sun_color);
 #endif
-
+    new_sky += atmosphere;
     return new_sky;
 }
 

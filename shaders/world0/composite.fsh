@@ -24,6 +24,7 @@ uniform mat4 shadowModelView;
 
 // uniform vec3 cameraPosition;
 uniform vec3 light_dir;
+uniform vec3 sun_dir;
 
 #include "/include/pack.glsl"
 #include "/include/sky/sky.glsl"
