@@ -49,6 +49,7 @@ void main()
 //-----------------------------------------------------------------
 #if defined frag
 
+#include "/include/global.glsl"
 #include "/include/pack.glsl"
 
 uniform sampler2D lightmap;
@@ -74,8 +75,8 @@ void main()
         discard;
     }
 
-    gbuffer_data_0 = vec4(encode_unit_vector(normal), // xy: normal
-                          pack_unorm_2x8(lmcoord),    // z: lmcoord
-                          material_mask);             //  w: material_mask
+    gbuffer_data_0 = vec4(encode_unit_vector(normal),                   // xy: normal
+                          pack_unorm_2x8(lmcoord),                      // z: lmcoord
+                          clamp(material_mask * rcp(255.f), 0.f, 1.f)); //  w: material_mask
 }
 #endif

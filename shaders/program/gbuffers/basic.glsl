@@ -1,12 +1,12 @@
 
 #if defined vert
 
-out vec4 color;
+out vec4 basic_color;
 
 void main()
 {
     gl_Position = ftransform();
-    color = gl_Color;
+    basic_color = gl_Color;
 }
 
 #endif
@@ -15,14 +15,20 @@ void main()
 //-----------------------------------------------------------------
 #if defined frag
 
-in vec4 color;
+#include "/include/pack.glsl"
 
-/* RENDERTARGETS: 0 */
-layout(location = 0) out vec4 scene_color;
+in vec4 basic_color;
+
+/* clang-format off */
+layout(location = 0) out vec4 color;
+layout(location = 1) out vec4 gbuffer_data_0; // colortex1 in deferred/composite
+/* DRAWBUFFERS:01 */
+/* clang-format on */
 
 void main()
 {
-    scene_color = color;
+    color = basic_color;
+    gbuffer_data_0 = vec4(encode_unit_vector(vec3(0.f, 1.f, 0.f)), 0.f, 0.f);
 }
 
 #endif

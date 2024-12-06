@@ -20,8 +20,12 @@ vec3 specular_light(vec3 normal, vec3 view_dir, vec3 light_dir, vec2 light_level
 {
     vec3 half = normalize(light_dir + view_dir);
     float alpha = dot(normal, half);
-
-    float spec = pow(max(0.0, alpha), 16.0) * light_level.y;
+    float power = 8.0;
+    if (material_mask == 1.0)
+    {
+        power = 64.0;
+    }
+    float spec = pow(max(0.0, alpha), power) * light_level.y;
     return vec3(1.0) * spec;
 }
 

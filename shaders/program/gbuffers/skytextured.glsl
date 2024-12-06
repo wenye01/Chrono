@@ -31,8 +31,10 @@ in vec2 sky_uv;
 in vec2 texcoord;
 in vec4 glcolor;
 
+/* clang-format off */
 /* RENDERTARGETS: 0 */
 layout(location = 0) out vec4 scene_color;
+/* clang-format on */
 
 // 原版天空
 void main()

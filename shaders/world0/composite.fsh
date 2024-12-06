@@ -50,14 +50,14 @@ void main()
     // x: 光源亮度, y: 天光亮度
     vec2 light_level = unpack_unorm_2x8(gbuffer_data_0.z);
     uint material_mask = uint(gbuffer_data_0.w * 255.f);
-
-    if (depth == 1.0f)
-    {
-        scene_color = texture(colortex0, texcoord) + vec4(draw_sky(world_dir), 1.f);
-    }
-    else
+    // float shadow = calculatorShadow(scene_pos, normal);
+    if (material_mask == 1.0)
     {
         scene_color = texture(colortex0, texcoord) *
                       lighting(scene_pos, normal, world_dir, light_dir, light_level, material_mask);
+    }
+    else
+    {
+        scene_color = texture(colortex0, texcoord);
     }
 }
