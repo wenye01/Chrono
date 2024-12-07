@@ -40,4 +40,59 @@ vec4 lighting(vec3 world_pos, vec3 normal, vec3 view_dir, vec3 light_dir, vec2 l
 
     return vec4(light, 1.f);
 }
+
+vec4 lighting_brdf(vec3 albedo, vec3 world_pos, vec3 normal, vec3 view_dir, vec3 light_dir, uint material_mask,
+                   vec2 light_level)
+{
+    float shadow = calculator_shadow(world_pos, normal);
+    // todo:阴影感觉不太对，light_dir没用，手部阴影奇怪
+    // 定义粗糙度、金属度和反射率的默认值
+    float roughness = 0.5;
+    float metallic = 0.0;
+    vec3 reflectance = vec3(0.04);
+
+    // 当 material_mask 为 1 时调整水的参数
+    if (material_mask == 1.0)
+    {
+        roughness = 0.05;         // 较低的粗糙度以获得更平滑的表面
+        reflectance = vec3(0.02); // 较高的反射率以模拟水
+    }
+
+    float alpha = pow(roughness, 2);
+
+    vec3 H = normalize(light_dir + view_dir);
+
+    // 向量点积
+    float NdotV = clamp(dot(normal, view_dir), 0.001, 1.0);
+    float NdotL = clamp(dot(normal, light_dir), 0.001, 1.0);
+    float NdotH = clamp(dot(normal, H), 0.001, 1.0);
+    float VdotH = clamp(dot(view_dir, H), 0.001, 1.0);
+
+    // 菲涅耳效应
+    vec3 F0 = reflectance;
+    vec3 fresnelReflectance = F0 + (1.0 - F0) * pow(1.0 - VdotH, 5.0); // 施基克近似
+
+    // phong漫反射
+    vec3 rhoD = albedo;
+    rhoD *= (vec3(1.0) - fresnelReflectance); // 能量守恒 - 不反射的部分添加到漫反射
+
+    // rhoD *= (1-metallic); // 金属的漫反射为0
+
+    // 几何衰减
+    float k = alpha / 2;
+    float geometry = (NdotL / (NdotL * (1 - k) + k)) * (NdotV / ((NdotV * (1 - k) + k)));
+
+    // 微观凹凸分布
+    float lowerTerm = pow(NdotH, 2) * (pow(alpha, 2) - 1.0) + 1.0;
+    float normalDistributionFunctionGGX = pow(alpha, 2) / (3.14159 * pow(lowerTerm, 2));
+
+    vec3 phongDiffuse = rhoD; //
+    vec3 cookTorrance = (fresnelReflectance * normalDistributionFunctionGGX * geometry) / (4 * NdotL * NdotV);
+    float light_intensity = light_dir.x;
+    vec3 BRDF = (phongDiffuse + cookTorrance) * NdotL;
+
+    vec3 diffFunction = BRDF * shadow;
+
+    return vec4(diffFunction, 1.f);
+}
 #endif
