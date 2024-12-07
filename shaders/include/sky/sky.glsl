@@ -33,7 +33,7 @@ vec3 draw_moon(vec3 ray_dir)
     return vec3(0.f);
 }
 
-const float sun_luminance = 40.0; // luminance of sun disk
+const float sun_luminance = 15.0; // luminance of sun disk
 
 vec3 pal(float t, vec3 a, vec3 b, vec3 c, vec3 d)
 {
@@ -53,7 +53,7 @@ vec3 draw_sun(vec3 ray_dir, vec3 sun_color)
     float center_to_edge = max(sun_angular_radius - fast_acos(nu), 0.f);
     vec3 limb_darkening = pow(vec3(1.0 - sqr(1.0 - center_to_edge)), 0.5 * alpha);
 
-    return sun_luminance * sun_color * step(0.0, center_to_edge) * limb_darkening;
+    return  sun_luminance * vec3(0.02)* step(0.0, center_to_edge) * limb_darkening;
 }
 
 vec3 draw_sky(vec3 ray_dir, vec3 atmosphere, vec3 sun_color)
@@ -64,7 +64,7 @@ vec3 draw_sky(vec3 ray_dir, vec3 atmosphere, vec3 sun_color)
     new_sky += draw_moon(ray_dir);
 
 #ifndef VANILLA_SUN
-    // new_sky += draw_sun(ray_dir, sun_color);
+    new_sky += draw_sun(ray_dir, sun_color);
 #endif
     new_sky += atmosphere;
     return new_sky;

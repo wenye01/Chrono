@@ -3,6 +3,21 @@
 
 #include "/include/global.glsl"
 
+const mat3 rec709_to_xyz = mat3(
+	 0.4124,  0.3576,  0.1805,
+	 0.2126,  0.7152,  0.0722,
+	 0.0193,  0.1192,  0.9505
+);
+
+// Rec. 2020 (working color space)
+const mat3 xyz_to_rec2020 = mat3(
+	 1.7166084, -0.3556621, -0.2533601,
+	-0.6666829,  1.6164776,  0.0157685,
+	 0.0176422, -0.0427763,  0.94222867
+);
+
+#define from_srgb(x) (pow(x, vec3(2.2)) * rec709_to_xyz*xyz_to_rec2020)
+
 float get_sun_exposure()
 {
     const float base_scale = 7.0 * 1.0;
@@ -26,14 +41,14 @@ vec3 get_sun_tint()
 
     // User tint
 
-    // const vec3 tint_morning = from_srgb(vec3(SUN_MR, SUN_MG, SUN_MB));
-    // const vec3 tint_noon = from_srgb(vec3(SUN_NR, SUN_NG, SUN_NB));
-    // const vec3 tint_evening = from_srgb(vec3(SUN_ER, SUN_EG, SUN_EB));
+    const vec3 tint_morning = from_srgb(vec3(1.0));
+    const vec3 tint_noon = from_srgb(vec3(1.0));
+    const vec3 tint_evening = from_srgb(vec3(1.0));
 
-    // vec3 user_tint = mix(tint_noon, tint_morning, time_sunrise);
-    // user_tint = mix(user_tint, tint_evening, time_sunset);
+    vec3 user_tint = mix(tint_noon, tint_morning, time_sunrise);
+    user_tint = mix(user_tint, tint_evening, time_sunset);
 
-    return morning_evening_tint * blue_hour_tint; //* user_tint;
+    return morning_evening_tint * blue_hour_tint * user_tint;
 }
 
 float get_moon_exposure()
@@ -45,7 +60,7 @@ float get_moon_exposure()
 
 vec3 get_moon_tint()
 {
-    const vec3 base_tint = vec3(0.75, 0.83, 1.0); // from_srgb(vec3(MOON_R, MOON_G, MOON_B));
+    const vec3 base_tint = from_srgb(vec3(0.75, 0.83, 1.0)); // from_srgb(vec3(MOON_R, MOON_G, MOON_B));
 
     return base_tint;
 }
