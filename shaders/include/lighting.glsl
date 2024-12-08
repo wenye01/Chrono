@@ -18,8 +18,8 @@ vec3 diffuse_light(vec3 normal, vec3 light_dir, vec2 light_level, uint material_
 
 vec3 specular_light(vec3 normal, vec3 view_dir, vec3 light_dir, vec2 light_level, uint material_mask)
 {
-    vec3 half = normalize(light_dir + view_dir);
-    float alpha = dot(normal, half);
+    vec3 half_vec = normalize(light_dir + view_dir);
+    float alpha = dot(normal, half_vec);
     float power = 8.0;
     if (material_mask == 1.0)
     {
