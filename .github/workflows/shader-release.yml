@@ -1,0 +1,59 @@
+name: Build and Release Shaders
+
+on:
+  push:
+    branches:
+      - main  # 或者你希望的其他分支名称
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # 使用最新版本的 Ubuntu 环境
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Create Chrono.zip archive
+        run: |
+          # 打包 shaders 文件夹为 Chrono.zip
+          zip -r Chrono.zip shaders/  # 只压缩 shaders 文件夹内容
+          # 确认文件是否成功生成
+          ls -l Chrono.zip  # 列出生成的文件，确保存在
+
+      - name: Upload Chrono.zip as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Chrono.zip
+          path: Chrono.zip  # 上传 Chrono.zip 作为 artifact
+
+      - name: Create a new tag
+        run: |
+          # 使用当前的提交哈希生成一个新的标签
+          TAG_NAME="release-${GITHUB_SHA}"
+          git tag $TAG_NAME
+          git push origin $TAG_NAME  # 将标签推送到 GitHub
+
+  release:
+    needs: build  # 确保打包成功后才执行创建 Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download Chrono.zip from artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: Chrono.zip  # 下载 Chrono.zip artifact
+
+      - name: Upload Chrono.zip to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: Chrono.zip  # 上传打包的 Chrono.zip 文件到 GitHub Release
+          tag_name: release-${{ github.sha }}  # 使用我们创建的标签名
+          token: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub 提供的 token 进行身份验证
