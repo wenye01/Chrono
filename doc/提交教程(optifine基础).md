@@ -5,7 +5,7 @@
 Optifine采用延迟渲染技术，请提前了解延迟渲染的基本原理。[LearnOpenGL参考资料](https://learnopengl-cn.github.io/05%20Advanced%20Lighting/08%20Deferred%20Shading/)
 
 执行顺序如下：
-**shadow  --->  shadowcomp  --->  prepare  --->  gbuffers  --->  deferred  --->  composite  --->  final**
+**shadow  --->  shadowcomp  --->  prepare  --->  gbuffers  --->  deferred  ---> gbuffers(translucent) --->composite  --->  final**
 
 [Optifine对于着色器的文档](https://optifine.readthedocs.io/shaders_dev/programs.html)
 
@@ -48,4 +48,4 @@ shaders.properties控制选择光影时的光影设置面板，以及自定义�
 
 ### 杂项
 
-1. lightmap为亮度贴图，类似于2DLUT图，使用vaUV2或gl_MultiTexCoord1经过计算后可以得到正确的采样值，其中x坐标代表光源亮度，y坐标表示天光亮度
+1. lightmap为亮度贴图，类似于2DLUT图，使用vaUV2或gl_MultiTexCoord1经过计算后可以得到正确的采样值，其中x坐标代表光源亮度，y坐标表示天光亮度，

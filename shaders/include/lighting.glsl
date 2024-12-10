@@ -18,8 +18,8 @@ vec3 diffuse_light(vec3 normal, vec3 light_dir, vec2 light_level, uint material_
 
 vec3 specular_light(vec3 normal, vec3 view_dir, vec3 light_dir, vec2 light_level, uint material_mask)
 {
-    vec3 half = normalize(light_dir + view_dir);
-    float alpha = dot(normal, half);
+    vec3 half_vec = normalize(light_dir + view_dir);
+    float alpha = dot(normal, half_vec);
     float power = 8.0;
     if (material_mask == 1.0)
     {
@@ -42,7 +42,7 @@ vec4 lighting(vec3 world_pos, vec3 normal, vec3 view_dir, vec3 light_dir, vec2 l
 }
 
 vec4 lighting_brdf(vec3 albedo, vec3 world_pos, vec3 normal, vec3 view_dir, vec3 light_dir, uint material_mask,
-                   vec2 light_level)
+                   vec2 light_level) 
 {
     float shadow = calculator_shadow(world_pos, normal);
     // todo:阴影感觉不太对，light_dir没用，手部阴影奇怪
@@ -88,7 +88,7 @@ vec4 lighting_brdf(vec3 albedo, vec3 world_pos, vec3 normal, vec3 view_dir, vec3
 
     vec3 phongDiffuse = rhoD; //
     vec3 cookTorrance = (fresnelReflectance * normalDistributionFunctionGGX * geometry) / (4 * NdotL * NdotV);
-    float light_intensity = light_dir.x;
+    float light_intensity = light_dir.x; // light_dir和light_level不是一个东西，写反了
     vec3 BRDF = (phongDiffuse + cookTorrance) * NdotL;
 
     vec3 diffFunction = BRDF * shadow;
