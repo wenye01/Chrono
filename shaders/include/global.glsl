@@ -4,7 +4,7 @@
 #include "/setting.glsl"
 #include "/include/mathematics.glsl"
 
-const float pi = 3.1415926;
+const float pi = 3.1415926535897932384626433832795;
 
 float max_of(vec2 v)
 {

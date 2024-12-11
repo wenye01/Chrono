@@ -16,6 +16,8 @@ uniform sampler2D colortex1;
 uniform sampler2D shadowtex0;
 uniform sampler2D shadowtex1;
 
+uniform sampler2D noisetex;
+
 uniform mat4 gbufferModelView;
 uniform mat4 gbufferModelViewInverse;
 uniform mat4 gbufferProjectionInverse;
@@ -32,14 +34,20 @@ uniform vec3 moon_dir;
 
 uniform float time_sunrise;
 uniform float time_sunset;
+uniform int frameCounter;
 
 #include "/include/pack.glsl"
 #include "/include/sky/sky.glsl"
 #include "/include/lighting.glsl"
 #include "/include/sky/atomsphere.glsl"
-#include "/include/sky/newatom.glsl"
+//#include "/include/sky/newatom.glsl"
 
 in vec2 texcoord;
+
+float blueNoise()
+{
+    return fract(texelFetch2D(noisetex, ivec2(gl_FragCoord.xy) % 256, 0).a); // + 1.0 / 1.6180339887 * frameCounter);
+}
 
 const float hand_depth = 0.56;
 void main()
@@ -58,11 +66,10 @@ void main()
     vec3 sun_color = get_sun_exposure() * get_sun_tint();
     vec3 moon_color = get_moon_exposure() * get_moon_tint();
 
-    // vec3 atmosphere = atmosphere_scattering(world_dir, sun_color, sun_dir, moon_color, moon_dir);
-    vec2 v2 = vec2(0.f);
-    vec3 v3 = vec3(0.f);
-    vec3 atmosphere =
-        calculateAtmosphere(vec3(1.f), world_dir, vec3(0.f, 1.f, 0.f), sun_dir, moon_dir, v2, v3, 10, 0.2f);
+    vec3 atmosphere = atmosphere_scattering(world_dir, sun_color, sun_dir, moon_color, moon_dir);
+    
+    atmosphere = pow(atmosphere, vec3(1.0 / 1.4));
+  
     // decode
     vec3 normal = decode_unit_vector(gbuffer_data_0.xy);
     // x: 光源亮度, y: 天光亮度
@@ -71,7 +78,7 @@ void main()
 
     if (depth == 1.0f)
     {
-        scene_color = vec4(atmosphere / 8600, 1.f); // vec4(draw_sky(world_dir, atmosphere, sun_color), 1.f);
+        scene_color = vec4(draw_sky(world_dir, atmosphere, sun_color), 1.f);
     }
     else
     {
@@ -79,7 +86,7 @@ void main()
         //               lighting(scene_pos, normal, world_dir, light_dir, light_level,
         //               material_mask);//这边是布林冯模型
         vec3 albedo = texture(colortex0, texcoord).rgb;
-        scene_color = lighting_brdf(albedo, scene_pos, normal, world_dir, light_dir, material_mask, light_level);
+        scene_color = lighting_brdf(albedo, scene_pos, normal, -world_dir, light_dir, material_mask, light_level);
     }
-    // scene_color=vec4(atmosphere*1.0,1.f);
+    // scene_color = vec4(vec3(blueNoise()), 1.f);
 }
