@@ -56,8 +56,7 @@ void main()
     {
         // scene_color = texture(colortex0, texcoord) *
         //               lighting(scene_pos, normal, world_dir, light_dir, light_level, material_mask);
-        vec3 albedo = texture(colortex0, texcoord).rgb;
-        scene_color = lighting_brdf(albedo, scene_pos, normal, -world_dir, light_dir, material_mask, light_level);
+        scene_color = texture(colortex0, texcoord) * lighting_brdf(scene_pos, normal, -world_dir, light_dir, material_mask, light_level);
     }
     else
     {

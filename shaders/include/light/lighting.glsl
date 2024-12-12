@@ -41,7 +41,7 @@ vec4 lighting(vec3 world_pos, vec3 normal, vec3 view_dir, vec3 light_dir, vec2 l
     return vec4(light, 1.f);
 }
 
-vec4 lighting_brdf(vec3 albedo, vec3 world_pos, vec3 normal, vec3 view_dir, vec3 light_dir, uint material_mask,
+vec4 lighting_brdf(vec3 world_pos, vec3 normal, vec3 view_dir, vec3 light_dir, uint material_mask,
                    vec2 light_level) 
 {
     float shadow = calculator_shadow(world_pos, normal);
@@ -51,6 +51,8 @@ vec4 lighting_brdf(vec3 albedo, vec3 world_pos, vec3 normal, vec3 view_dir, vec3
     float metallic = 0.0;
     vec3 reflectance = vec3(0.04);
 
+    view_dir = -view_dir;
+    //light_dir = -light_dir;
     // 当 material_mask 为 1 时调整水的参数
     if (material_mask == 1.0)
     {
@@ -73,7 +75,7 @@ vec4 lighting_brdf(vec3 albedo, vec3 world_pos, vec3 normal, vec3 view_dir, vec3
     vec3 fresnelReflectance = F0 + (1.0 - F0) * pow(1.0 - VdotH, 5.0); // 施基克近似
 
     // phong漫反射
-    vec3 rhoD = albedo;
+    vec3 rhoD = vec3(light_level.y,light_level.y,light_level.y);
     rhoD *= (vec3(1.0) - fresnelReflectance); // 能量守恒 - 不反射的部分添加到漫反射
 
     // rhoD *= (1-metallic); // 金属的漫反射为0
@@ -88,7 +90,6 @@ vec4 lighting_brdf(vec3 albedo, vec3 world_pos, vec3 normal, vec3 view_dir, vec3
 
     vec3 phongDiffuse = rhoD; //
     vec3 cookTorrance = (fresnelReflectance * normalDistributionFunctionGGX * geometry) / (4 * NdotL * NdotV);
-    float light_intensity = light_dir.x; // light_dir和light_level不是一个东西，写反了
     vec3 BRDF = (phongDiffuse + cookTorrance) * NdotL;
 
     vec3 diffFunction = BRDF * shadow;
