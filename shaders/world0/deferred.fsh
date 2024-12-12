@@ -38,7 +38,7 @@ uniform int frameCounter;
 
 #include "/include/pack.glsl"
 #include "/include/sky/sky.glsl"
-#include "/include/lighting.glsl"
+#include "/include/light/lighting.glsl"
 #include "/include/sky/atomsphere.glsl"
 //#include "/include/sky/newatom.glsl"
 
@@ -67,9 +67,9 @@ void main()
     vec3 moon_color = get_moon_exposure() * get_moon_tint();
 
     vec3 atmosphere = atmosphere_scattering(world_dir, sun_color, sun_dir, moon_color, moon_dir);
-    
-    atmosphere = pow(atmosphere, vec3(1.0 / 1.4));
-  
+
+    // atmosphere = pow(atmosphere, vec3(1.0 / 2.2));
+
     // decode
     vec3 normal = decode_unit_vector(gbuffer_data_0.xy);
     // x: 光源亮度, y: 天光亮度

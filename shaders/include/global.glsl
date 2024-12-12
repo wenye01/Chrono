@@ -11,6 +11,16 @@ float max_of(vec2 v)
     return max(v.x, v.y);
 }
 
+float min_of(vec2 v)
+{
+    return min(v.x, v.y);
+}
+
+float min_of(vec3 v)
+{
+    return min(v.x, min(v.y, v.z));
+}
+
 float linear_step(float edge0, float edge1, float x)
 {
     return clamp01((x - edge0) / (edge1 - edge0));

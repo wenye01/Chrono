@@ -44,7 +44,7 @@ vec3 spc(float n, float bright)
     return pal(n, vec3(bright), vec3(0.5), vec3(1.0), vec3(0.0, 0.33, 0.67));
 }
 
-vec3 draw_sun(vec3 ray_dir,vec3 sun_color)
+vec3 draw_sun(vec3 ray_dir, vec3 sun_color)
 {
     float nu = dot(ray_dir, sun_dir);
 
@@ -53,7 +53,7 @@ vec3 draw_sun(vec3 ray_dir,vec3 sun_color)
     float center_to_edge = max(sun_angular_radius - fast_acos(nu), 0.f);
     vec3 limb_darkening = pow(vec3(1.0 - sqr(1.0 - center_to_edge)), 0.5 * alpha);
 
-    return  sun_luminance * sun_color / 400.0 * step(0.0, center_to_edge) * limb_darkening;
+    return sun_luminance * sun_color / 300.f * step(0.0, center_to_edge) * limb_darkening;
 }
 
 vec3 draw_sky(vec3 ray_dir, vec3 atmosphere, vec3 sun_color)
@@ -64,7 +64,7 @@ vec3 draw_sky(vec3 ray_dir, vec3 atmosphere, vec3 sun_color)
     new_sky += draw_moon(ray_dir);
 
 #ifndef VANILLA_SUN
-    new_sky += draw_sun(ray_dir,sun_color);
+    new_sky += draw_sun(ray_dir, sun_color);
 #endif
     new_sky += atmosphere;
     return new_sky;

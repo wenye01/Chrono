@@ -28,7 +28,7 @@ uniform vec3 sun_dir;
 
 #include "/include/pack.glsl"
 #include "/include/sky/sky.glsl"
-#include "/include/lighting.glsl"
+#include "/include/light/lighting.glsl"
 
 in vec2 texcoord;
 
@@ -57,7 +57,7 @@ void main()
         // scene_color = texture(colortex0, texcoord) *
         //               lighting(scene_pos, normal, world_dir, light_dir, light_level, material_mask);
         vec3 albedo = texture(colortex0, texcoord).rgb;
-        scene_color = lighting_brdf(albedo, scene_pos, normal, world_dir, light_dir, material_mask, light_level);
+        scene_color = lighting_brdf(albedo, scene_pos, normal, -world_dir, light_dir, material_mask, light_level);
     }
     else
     {
