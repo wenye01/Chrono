@@ -51,8 +51,6 @@ vec4 lighting_brdf(vec3 world_pos, vec3 normal, vec3 view_dir, vec3 light_dir, u
     float metallic = 0.0;
     vec3 reflectance = vec3(0.04);
 
-    view_dir = -view_dir;
-    //light_dir = -light_dir;
     // 当 material_mask 为 1 时调整水的参数
     if (material_mask == 1.0)
     {
