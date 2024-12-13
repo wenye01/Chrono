@@ -48,4 +48,6 @@ shaders.properties控制选择光影时的光影设置面板，以及自定义�
 
 ### 杂项
 
-1. lightmap为亮度贴图，类似于2DLUT图，使用vaUV2或gl_MultiTexCoord1经过计算后可以得到正确的采样值，其中x坐标代表光源亮度，y坐标表示天光亮度，
+1. lightmap为亮度贴图，类似于2DLUT图，使用vaUV2或gl_MultiTexCoord1经过计算后可以得到正确的采样值，其中x坐标代表光源亮度，y坐标表示天光亮度
+
+
