@@ -19,6 +19,7 @@ uniform sampler2D shadowtex1;
 uniform sampler2D noisetex;
 
 uniform mat4 gbufferModelView;
+uniform mat4 gbufferProjection;
 uniform mat4 gbufferModelViewInverse;
 uniform mat4 gbufferProjectionInverse;
 
@@ -41,12 +42,15 @@ uniform int frameCounter;
 #include "/include/light/lighting.glsl"
 #include "/include/sky/atomsphere.glsl"
 //#include "/include/sky/newatom.glsl"
+#include "/include/light/ambient_occlusion.glsl"
 
 in vec2 texcoord;
 
-float blueNoise()
+const float phi2 = 1.3247179572; // Plastic constant, solution to x^3 = x + 1
+vec2 r2(int n, vec2 seed)
 {
-    return fract(texelFetch2D(noisetex, ivec2(gl_FragCoord.xy) % 256, 0).a); // + 1.0 / 1.6180339887 * frameCounter);
+    const vec2 alpha = 1.0 / vec2(phi2, phi2 * phi2);
+    return fract(seed + n * alpha);
 }
 
 const float hand_depth = 0.56;
@@ -57,7 +61,7 @@ void main()
     float depth = texelFetch(depthtex1, texelUV, 0).x;
     vec4 gbuffer_data_0 = texelFetch(colortex1, texelUV, 0);
 
-    // depth += 0.38 * float(depth < hand_depth); // 手部深度偏移
+    depth += 0.38 * float(depth < hand_depth); // 手部深度偏移
 
     vec3 view_pos = screen2view(vec3(texcoord, depth));
     vec3 scene_pos = view2scene(view_pos);
@@ -75,18 +79,24 @@ void main()
     // x: 光源亮度, y: 天光亮度
     vec2 light_level = unpack_unorm_2x8(gbuffer_data_0.z);
     uint material_mask = uint(gbuffer_data_0.w * 255.f);
+    // vec2 dither = r2(frameCounter, vec2(0.5));
+    vec3 view_normal = mat3(gbufferModelViewInverse) * normal;
+    vec3 ao = ambient_occlusion(vec3(texcoord, depth), view_pos, view_normal);
 
     if (depth == 1.0f)
     {
         scene_color = vec4(draw_sky(world_dir, atmosphere, sun_color), 1.f);
+        scene_color.rgb = clamp(scene_color.rgb * working_to_display_color, 0.f, 1.f);
     }
     else
     {
         // scene_color = texture(colortex0, texcoord) *
         //               lighting(scene_pos, normal, world_dir, light_dir, light_level,
         //               material_mask);//这边是布林冯模型
-        
-        scene_color = texture(colortex0, texcoord) * lighting_brdf(scene_pos, normal, -world_dir, light_dir, material_mask, light_level);
+
+        // scene_color = texture(colortex0, texcoord) *
+        //              lighting(scene_pos, normal, -world_dir, light_dir, light_level, material_mask);
+        scene_color.rgb = ao;
     }
     // scene_color = vec4(vec3(blueNoise()), 1.f);
 }

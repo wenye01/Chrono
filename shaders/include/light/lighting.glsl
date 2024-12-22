@@ -3,6 +3,7 @@
 
 #include "/include/global.glsl"
 #include "/include/shadowcomp.glsl"
+//#include "/include/light/ambient_occlusion.glsl"
 
 vec3 ambient_light(vec2 light_level)
 {
@@ -29,20 +30,7 @@ vec3 specular_light(vec3 normal, vec3 view_dir, vec3 light_dir, vec2 light_level
     return vec3(1.0) * spec;
 }
 
-vec4 lighting(vec3 world_pos, vec3 normal, vec3 view_dir, vec3 light_dir, vec2 light_level, uint material_mask)
-{
-    vec3 light = vec3(0.0);
-    float shadow = calculator_shadow(world_pos, normal);
-
-    light += ambient_light(light_level);
-    light += diffuse_light(normal, light_dir, light_level, material_mask) * shadow;
-    light += specular_light(normal, -view_dir, light_dir, light_level, material_mask) * shadow;
-
-    return vec4(light, 1.f);
-}
-
-vec4 lighting_brdf(vec3 world_pos, vec3 normal, vec3 view_dir, vec3 light_dir, uint material_mask,
-                   vec2 light_level) 
+vec3 lighting_brdf(vec3 world_pos, vec3 normal, vec3 view_dir, vec3 light_dir, vec2 light_level, uint material_mask)
 {
     float shadow = calculator_shadow(world_pos, normal);
     // todo:阴影感觉不太对，light_dir没用，手部阴影奇怪
@@ -73,7 +61,7 @@ vec4 lighting_brdf(vec3 world_pos, vec3 normal, vec3 view_dir, vec3 light_dir, u
     vec3 fresnelReflectance = F0 + (1.0 - F0) * pow(1.0 - VdotH, 5.0); // 施基克近似
 
     // phong漫反射
-    vec3 rhoD = vec3(light_level.y,light_level.y,light_level.y);
+    vec3 rhoD = vec3(light_level.y, light_level.y, light_level.y);
     rhoD *= (vec3(1.0) - fresnelReflectance); // 能量守恒 - 不反射的部分添加到漫反射
 
     // rhoD *= (1-metallic); // 金属的漫反射为0
@@ -92,6 +80,15 @@ vec4 lighting_brdf(vec3 world_pos, vec3 normal, vec3 view_dir, vec3 light_dir, u
 
     vec3 diffFunction = BRDF * shadow;
 
-    return vec4(diffFunction, 1.f);
+    return diffFunction;
 }
+
+vec4 lighting(vec3 world_pos, vec3 normal, vec3 view_dir, vec3 light_dir, vec2 light_level, uint material_mask)
+{
+    vec3 light = vec3(0.0);
+    light = lighting_brdf(world_pos, normal, view_dir, light_dir, light_level, material_mask);
+
+    return vec4(light, 1.f);
+}
+
 #endif

@@ -5,6 +5,7 @@
 // 使用前需要声明变量
 // mat4 gbufferModelView;
 // mat4 gbufferModelViewInverse;
+// mat4 gbufferProjection;
 // mat4 gbufferProjectionInverse;
 
 vec4 project(mat4 m, vec3 pos)
@@ -26,7 +27,7 @@ vec3 screen2view(vec3 screen_pos)
 
 vec3 view2screen(vec3 view_pos)
 {
-    vec3 ndc_pos = project_and_divide(gbufferModelViewInverse, view_pos);
+    vec3 ndc_pos = project_and_divide(gbufferProjection, view_pos);
     return ndc_pos * 0.5 + 0.5;
 }
 

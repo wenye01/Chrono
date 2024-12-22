@@ -4,6 +4,20 @@
 #define clamp01(x) clamp(x, 0.0, 1.0) // free on operation output
 #define rcp(x) (1.f / x)              //
 
+float rcp_length(vec2 v)
+{
+    return inversesqrt(dot(v, v));
+}
+float length_squared(vec2 v)
+{
+    return dot(v, v);
+}
+float length_squared(vec3 v)
+{
+    return dot(v, v);
+}
+const float pi = 3.1415926535897932384626433832795;
+
 float sqr(float x)
 {
     return x * x;

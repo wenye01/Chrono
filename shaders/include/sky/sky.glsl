@@ -1,22 +1,7 @@
 #if !defined INCLUDE_SKY
 #define INCLUDE_SKY
 
-#include "/setting.glsl"
-
 #include "/include/global.glsl"
-
-float fast_acos(float x)
-{
-    const float pi = 3.1415926;
-    const float C0 = 1.57018;
-    const float C1 = -0.201877;
-    const float C2 = 0.0464619;
-
-    float res = (C2 * abs(x) + C1) * abs(x) + C0; // p(x)
-    res *= sqrt(1.0 - abs(x));
-
-    return x >= 0 ? res : pi - res; // Undo range reduction
-}
 
 vec3 draw_cloud()
 {

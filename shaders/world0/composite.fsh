@@ -16,6 +16,7 @@ uniform sampler2D shadowtex0;
 uniform sampler2D shadowtex1;
 
 uniform mat4 gbufferModelView;
+uniform mat4 gbufferProjection;
 uniform mat4 gbufferModelViewInverse;
 uniform mat4 gbufferProjectionInverse;
 
@@ -56,7 +57,8 @@ void main()
     {
         // scene_color = texture(colortex0, texcoord) *
         //               lighting(scene_pos, normal, world_dir, light_dir, light_level, material_mask);
-        scene_color = texture(colortex0, texcoord) * lighting_brdf(scene_pos, normal, -world_dir, light_dir, material_mask, light_level);
+        scene_color = texture(colortex0, texcoord) *
+                      lighting(scene_pos, normal, -world_dir, light_dir, light_level, material_mask);
     }
     else
     {

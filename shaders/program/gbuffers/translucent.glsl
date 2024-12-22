@@ -3,7 +3,7 @@
 attribute vec3 mc_Entity;
 
 uniform mat4 gbufferModelView;
-uniform mat4 gbufferPorjection;
+uniform mat4 gbufferProjection;
 uniform mat4 gbufferModelViewInverse;
 uniform mat4 gbufferProjectionInverse;
 
