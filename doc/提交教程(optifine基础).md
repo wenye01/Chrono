@@ -46,6 +46,12 @@ optifine自动读取block.properties，entity.properties，item.properties，sha
 optifine中有内置变量mc_Entity记录当前所计算顶点的物品id，以此可以对不同的物品做不同的处理，在block.properties，entity.properties，item.properties中分别对不同的物品自定义不同的id，格式为`<block/entity/item>.<id> = name`，其中name为mc对物品的内置名称，id自定义，可以多个物品共同使用同一id，中间使用空格分隔，为避免自定义的id与内置id冲突，一般id会从10001开始计
 shaders.properties控制选择光影时的光影设置面板，以及自定义纹理，自定义内置变量，lang文件夹中的.lang文件对shaders.propertie中的设置进行翻译以及文本对应。
 
+# Cherno
+本项目的框架如下
+
+## world\<id\>
+world\<id>文件夹下将放所有gbuffer_*，deferred，composite，final着色器文件，其中gbuffer_*着色器负责将需要的信息写入帧缓冲，通常有**几何、基础颜色，材质信息**，gbuffers_*系列着色器会有很多重复内容，将其抽取出来放在program/gbuffers目录下，用`#if defined vert`和`#if defined frag`来区分vsh或者fsh，一些较长的着色器则会单独写在一个glsl文件里，而非合并为一个。
+
 ### 杂项
 
 1. lightmap为亮度贴图，类似于2DLUT图，使用vaUV2或gl_MultiTexCoord1经过计算后可以得到正确的采样值，其中x坐标代表光源亮度，y坐标表示天光亮度

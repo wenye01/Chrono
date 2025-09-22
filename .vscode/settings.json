@@ -1,2 +1,11 @@
 {
+    "files.associations": {
+        "*.vsh": "glsl",
+        "*.fsh": "glsl",
+        "*.gsh": "glsl",
+        "*.csh": "glsl"
+    },
+    
+    "editor.formatOnType": true,
+    "editor.formatOnSave": true,
 }

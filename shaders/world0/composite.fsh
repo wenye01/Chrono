@@ -57,8 +57,7 @@ void main()
     {
         // scene_color = texture(colortex0, texcoord) *
         //               lighting(scene_pos, normal, world_dir, light_dir, light_level, material_mask);
-        scene_color = texture(colortex0, texcoord) *
-                      lighting(scene_pos, normal, -world_dir, light_dir, light_level, material_mask);
+        scene_color = texture(colortex0, texcoord);
     }
     else
     {

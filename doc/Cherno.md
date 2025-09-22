@@ -38,24 +38,10 @@ package.bat文件打包项目为常用的.zip光影包
 
 ## 环境配置以及调试方式
 
-使用Visual Studio Code作为编程环境，下载GLSL Lint，Shader language support for VS Code，Clang-Format三个扩展，下载 []glsl参考编译器](https://github.com/KhronosGroup/glslang/releases)，下载[]clang-format](https://llvm.org/builds/)，打开VSC的setting.json文件，添加以下配置
-
+使用Visual Studio Code作为编程环境，下载GLSL Syntax for VS Code，Clang-Format三个扩展，下载[]clang-format](https://llvm.org/builds/)，打开VSC的setting.json文件，添加以下配置
+代码高亮受vsc主题影响，快捷键`CTRL+K CTRL+T`进行设置，插件作者推荐使用**Monokai**
 ```json
 {
-    "glsllint.glslangValidatorPath": "glslangValidator.exe的相对路径或绝对路径",
-    "files.associations": {
-        "*.vsh": "glsl",
-        "*.fsh": "glsl",
-        "*.gsh": "glsl",
-        "*.csh": "glsl"
-    },
-    "glsllint.additionalStageAssociations": {
-        ".glsl": "vert",
-        ".vsh": "vert",
-        ".fsh": "frag",
-        ".gsh": "geom",
-        ".csh": "comp"
-    },
     "clang-format.executable": "clang-format.exe的相对路径或绝对路径",
     "editor.formatOnType": true,
     "editor.formatOnSave": true,

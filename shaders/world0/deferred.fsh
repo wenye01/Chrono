@@ -72,8 +72,6 @@ void main()
 
     vec3 atmosphere = atmosphere_scattering(world_dir, sun_color, sun_dir, moon_color, moon_dir);
 
-    // atmosphere = pow(atmosphere, vec3(1.0 / 2.2));
-
     // decode
     vec3 normal = decode_unit_vector(gbuffer_data_0.xy);
     // x: 光源亮度, y: 天光亮度
@@ -85,18 +83,13 @@ void main()
 
     if (depth == 1.0f)
     {
+        // 天空部分
         scene_color = vec4(draw_sky(world_dir, atmosphere, sun_color), 1.f);
         scene_color.rgb = clamp(scene_color.rgb * working_to_display_color, 0.f, 1.f);
     }
     else
     {
-        // scene_color = texture(colortex0, texcoord) *
-        //               lighting(scene_pos, normal, world_dir, light_dir, light_level,
-        //               material_mask);//这边是布林冯模型
-
-        // scene_color = texture(colortex0, texcoord) *
-        //              lighting(scene_pos, normal, -world_dir, light_dir, light_level, material_mask);
-        scene_color.rgb = ao;
+        scene_color = texture(colortex0, texcoord);
     }
-    // scene_color = vec4(vec3(blueNoise()), 1.f);
+    scene_color = texture(colortex0, texcoord);
 }
