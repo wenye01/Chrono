@@ -1,6 +1,5 @@
-#version 330 compatibility
+#version 400 compatibility
 
 #define GBUFFERS_ENTITIES
-#define vert
 
-#include "/program/gbuffers/solid.glsl"
+#include "/program/gbuffers/solid.vsh"

@@ -1,23 +1,12 @@
-#version 330 compatibility
+#version 400 compatibility
 
-uniform sampler2D lightmap;
-uniform sampler2D gtexture;
-
-uniform float alphaTestRef = 0.1;
-
-in vec2 lmcoord;
-in vec2 texcoord;
-in vec4 glcolor;
-
-/* RENDERTARGETS: 0 */
+/* clang-format off */
 layout(location = 0) out vec4 color;
+//layout(location = 1) out vec4 gbuffer_data_0; // colortex1 in deferred/composite
+///* DRAWBUFFERS:01 */
+/* clang-format on */
 
 void main()
 {
-    color = texture(gtexture, texcoord) * glcolor;
-    color *= texture(lightmap, lmcoord);
-    if (color.a < alphaTestRef)
-    {
-        discard;
-    }
+    color = vec4(1.f);
 }

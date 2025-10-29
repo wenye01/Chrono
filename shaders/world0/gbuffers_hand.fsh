@@ -1,6 +1,5 @@
-#version 330 compatibility
+#version 400 compatibility
 
 #define GBUFFERS_HAND
-#define frag
 
-#include "/program/gbuffers/solid.glsl"
+#include "/program/gbuffers/solid.fsh"

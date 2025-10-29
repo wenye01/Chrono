@@ -47,10 +47,7 @@ optifine中有内置变量mc_Entity记录当前所计算顶点的物品id，以�
 shaders.properties控制选择光影时的光影设置面板，以及自定义纹理，自定义内置变量，lang文件夹中的.lang文件对shaders.propertie中的设置进行翻译以及文本对应。
 
 # Cherno
-本项目的框架如下
-
-## world\<id\>
-world\<id>文件夹下将放所有gbuffer_*，deferred，composite，final着色器文件，其中gbuffer_*着色器负责将需要的信息写入帧缓冲，通常有**几何、基础颜色，材质信息**，gbuffers_*系列着色器会有很多重复内容，将其抽取出来放在program/gbuffers目录下，用`#if defined vert`和`#if defined frag`来区分vsh或者fsh，一些较长的着色器则会单独写在一个glsl文件里，而非合并为一个。
+Cherno的框架如下，多处参考了photon，
 
 ### 杂项
 

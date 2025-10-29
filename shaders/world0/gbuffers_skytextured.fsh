@@ -1,4 +1,7 @@
-#version 330 compatibility
+#version 400 compatibility
 
-#define frag
-#include "/program/gbuffers/skytextured.glsl"
+// 不使用自带天空
+void main()
+{
+    discard;
+}
